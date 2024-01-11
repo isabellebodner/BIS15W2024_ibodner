@@ -1,6 +1,6 @@
 ---
 title: "Lab 1 Homework"
-author: "Please Add Your Name Here"
+author: "Isabelle Bodner"
 date: "2024-01-11"
 output:
   html_document: 
@@ -17,9 +17,9 @@ Make sure to use the formatting conventions of RMarkdown to make your report nea
 
 **2. What is the difference between R and RStudio? What is GitHub and why is it useful to programmers?**  
 
+R is a computer programming language designed for statistical computing and RStudio is a software interface that makes it easy to code in R. GitHub is an online software developing platform that makes coding projects accessible and organized for use and collaboration. It is extremely useful as it allows users to collaborate on coding projects and organize their work as well.
 
-
-**3. Navigate to my [BIS15L](https://github.com/jmledford3115/BIS15LW2021_jledford) repository on GitHub. Notice that near the bottom there is a nice, clean description of the repository. You want this on your repository! It is built by making edits to the `README.md` file using the RMarkdown conventions. Edit your repository's `README.md` file so that you have a clean informative description, including your email address. Be creative! You don't need to just copy mine. There are lots of examples online.**  
+**3. Navigate to my [BIS15L](https://github.com/jmledford3115/BIS15LW2024_jledford) repository on GitHub. Notice that near the bottom there is a nice, clean description of the repository. You want this on your repository! It is built by making edits to the `README.md` file using the RMarkdown conventions. Edit your repository's `README.md` file so that you have a clean informative description, including your email address. Be creative! You don't need to just copy mine. There are lots of examples online.**  
 
 **4. Calculate the following expressions. Be sure to include each one in a separate code chunk.**  
 
@@ -40,7 +40,7 @@ Make sure to use the formatting conventions of RMarkdown to make your report nea
 ## [1] 8
 ```
 
-**5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 16.**    
+**5. Did any of the results in #4 surprise you? Write two programs that calculate each expression such that the result for the first example is 4 and the second example is 8.**    
 
 
 
