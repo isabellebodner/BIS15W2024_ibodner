@@ -83,8 +83,8 @@ taxon_counts
 select(homerange, "species","trophic.guild")
 ```
 ```{r}
-canrnivore <- filter(homerange, trophic.guild == "carnivore")
-summary(canrnivore$species)
+carnivore <- filter(homerange, trophic.guild == "carnivore")
+summary(carnivore$species)
 ```
 
 ```{r}
@@ -94,26 +94,36 @@ summary(herbivore$species)
 
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
 ```{r}
-
+carnivore <- filter(homerange, trophic.guild == "carnivore")
+herbivore <- filter(homerange, trophic.guild == "herbivore")
 ```
 
 **8. Do herbivores or carnivores have, on average, a larger `mean.hra.m2`? Remove any NAs from the data.**  
 ```{r}
-
+mean(carnivore$mean.hra.m2, na.rm = T)
 ```
 
 ```{r}
-
+mean(herbivore$mean.hra.m2, na.rm = T)
 ```
+herbivores have a larger average mean.ra.m2.
 
 **9. Make a new dataframe `owls` that is limited to the mean mass, log10 mass, family, genus, and species of owls in the database. Which is the smallest owl? What is its common name? Do a little bit of searching online to see what you can learn about this species and provide a link below** 
 ```{r}
-
+names(homerange)
 ```
+```{r}
+owls <- select(homerange, "order","mean.mass.g","log10.mass","family","genus","species")
+owls <- filter(owls, order == "strigiformes")
+owls
+```
+
+smallest owl is species passerinum with a common name Eurasian pygmy owl
+https://en.wikipedia.org/wiki/Eurasian_pygmy_owl 
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 ```{r}
-
+filter(homerange, class == "aves")
 ```
 
 ## Push your final code to GitHub!
