@@ -57,6 +57,7 @@ homerange$taxon <- as.factor(homerange$taxon)
 homerange$order <- as.factor(homerange$order)
 levels(homerange$taxon)
 ```
+
 ```{r}
 levels(homerange$order)
 ```
@@ -112,6 +113,7 @@ herbivores have a larger average mean.ra.m2.
 ```{r}
 names(homerange)
 ```
+
 ```{r}
 owls <- select(homerange, "order","mean.mass.g","log10.mass","family","genus","species")
 owls <- filter(owls, order == "strigiformes")
@@ -122,9 +124,18 @@ smallest owl is species passerinum with a common name Eurasian pygmy owl
 https://en.wikipedia.org/wiki/Eurasian_pygmy_owl 
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
+
 ```{r}
-filter(homerange, class == "aves")
+largest_homerange <- select(homerange, "mean.hra.m2", "species", "class", "common.name")
+aves <- filter(largest_homerange, class == "aves")
 ```
+
+```{r}
+aves %>% 
+  arrange(desc(mean.hra.m2)) 
+```
+the Caracara of the species cheriway has the largest homerange
+The Caracara is a type of falcon. There are many different species of caracara and they live in many different places ranging from across the southern US and Central/South America.
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   

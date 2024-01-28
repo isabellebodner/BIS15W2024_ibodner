@@ -11,7 +11,7 @@
 
 <meta name="author" content="Isabelle Bodner" />
 
-<meta name="date" content="2024-01-24" />
+<meta name="date" content="2024-01-28" />
 
 <title>Lab 4 Homework</title>
 
@@ -376,7 +376,7 @@ display: none;
 
 <h1 class="title toc-ignore">Lab 4 Homework</h1>
 <h4 class="author">Isabelle Bodner</h4>
-<h4 class="date">2024-01-24</h4>
+<h4 class="date">2024-01-28</h4>
 
 </div>
 
@@ -563,8 +563,8 @@ guild.</strong></p>
 ##  9 lineatus    herbivore    
 ## 10 lituratus   herbivore    
 ## # ℹ 559 more rows</code></pre>
-<pre class="r"><code>canrnivore &lt;- filter(homerange, trophic.guild == &quot;carnivore&quot;)
-summary(canrnivore$species)</code></pre>
+<pre class="r"><code>carnivore &lt;- filter(homerange, trophic.guild == &quot;carnivore&quot;)
+summary(carnivore$species)</code></pre>
 <pre><code>##    Length     Class      Mode 
 ##       342 character character</code></pre>
 <pre class="r"><code>herbivore &lt;- filter(homerange, trophic.guild == &quot;herbivore&quot;)
@@ -573,16 +573,75 @@ summary(herbivore$species)</code></pre>
 ##       227 character character</code></pre>
 <p><strong>7. Make two new data frames, one which is restricted to
 carnivores and another that is restricted to herbivores.</strong></p>
+<pre class="r"><code>carnivore &lt;- filter(homerange, trophic.guild == &quot;carnivore&quot;)
+herbivore &lt;- filter(homerange, trophic.guild == &quot;herbivore&quot;)</code></pre>
 <p><strong>8. Do herbivores or carnivores have, on average, a larger
 <code>mean.hra.m2</code>? Remove any NAs from the data.</strong></p>
+<pre class="r"><code>mean(carnivore$mean.hra.m2, na.rm = T)</code></pre>
+<pre><code>## [1] 13039918</code></pre>
+<pre class="r"><code>mean(herbivore$mean.hra.m2, na.rm = T)</code></pre>
+<pre><code>## [1] 34137012</code></pre>
+<p>herbivores have a larger average mean.ra.m2.</p>
 <p><strong>9. Make a new dataframe <code>owls</code> that is limited to
 the mean mass, log10 mass, family, genus, and species of owls in the
 database. Which is the smallest owl? What is its common name? Do a
 little bit of searching online to see what you can learn about this
 species and provide a link below</strong></p>
+<pre class="r"><code>names(homerange)</code></pre>
+<pre><code>##  [1] &quot;taxon&quot;                      &quot;common.name&quot;               
+##  [3] &quot;class&quot;                      &quot;order&quot;                     
+##  [5] &quot;family&quot;                     &quot;genus&quot;                     
+##  [7] &quot;species&quot;                    &quot;primarymethod&quot;             
+##  [9] &quot;N&quot;                          &quot;mean.mass.g&quot;               
+## [11] &quot;log10.mass&quot;                 &quot;alternative.mass.reference&quot;
+## [13] &quot;mean.hra.m2&quot;                &quot;log10.hra&quot;                 
+## [15] &quot;hra.reference&quot;              &quot;realm&quot;                     
+## [17] &quot;thermoregulation&quot;           &quot;locomotion&quot;                
+## [19] &quot;trophic.guild&quot;              &quot;dimension&quot;                 
+## [21] &quot;preymass&quot;                   &quot;log10.preymass&quot;            
+## [23] &quot;PPMR&quot;                       &quot;prey.size.reference&quot;</code></pre>
+<pre class="r"><code>owls &lt;- select(homerange, &quot;order&quot;,&quot;mean.mass.g&quot;,&quot;log10.mass&quot;,&quot;family&quot;,&quot;genus&quot;,&quot;species&quot;)
+owls &lt;- filter(owls, order == &quot;strigiformes&quot;)
+owls</code></pre>
+<pre><code>## # A tibble: 9 × 6
+##   order        mean.mass.g log10.mass family    genus      species    
+##   &lt;fct&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;      
+## 1 strigiformes       119         2.08 strigidae aegolius   funereus   
+## 2 strigiformes       252         2.40 strigidae asio       otus       
+## 3 strigiformes       156.        2.19 strigidae athene     noctua     
+## 4 strigiformes      2191         3.34 strigidae bubo       bubo       
+## 5 strigiformes      1510         3.18 strigidae bubo       virginianus
+## 6 strigiformes        61.3       1.79 strigidae glaucidium passerinum 
+## 7 strigiformes      1920         3.28 strigidae nyctea     scandiaca  
+## 8 strigiformes       519         2.72 strigidae strix      aluco      
+## 9 strigiformes       285         2.45 tytonidae tyto       alba</code></pre>
+<p>smallest owl is species passerinum with a common name Eurasian pygmy
+owl <a href="https://en.wikipedia.org/wiki/Eurasian_pygmy_owl" class="uri">https://en.wikipedia.org/wiki/Eurasian_pygmy_owl</a></p>
 <p><strong>10. As measured by the data, which bird species has the
 largest homerange? Show all of your work, please. Look this species up
 online and tell me about it!</strong>.</p>
+<pre class="r"><code>largest_homerange &lt;- select(homerange, &quot;mean.hra.m2&quot;, &quot;species&quot;, &quot;class&quot;, &quot;common.name&quot;)
+aves &lt;- filter(largest_homerange, class == &quot;aves&quot;)</code></pre>
+<pre class="r"><code>aves %&gt;% 
+  arrange(desc(mean.hra.m2)) </code></pre>
+<pre><code>## # A tibble: 140 × 4
+##    mean.hra.m2 species      class common.name           
+##          &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt; &lt;chr&gt;                 
+##  1   241000000 cheriway     aves  caracara              
+##  2   200980000 pygargus     aves  Montagu&#39;s harrier     
+##  3   153860000 peregrinus   aves  peregrine falcon      
+##  4   117300000 pennatus     aves  booted eagle          
+##  5    84300000 camelus      aves  ostrich               
+##  6    78500000 gallicus     aves  short-toed snake eagle
+##  7    63585000 turtur       aves  European turtle dove  
+##  8    63570000 percnopterus aves  Egyptian vulture      
+##  9    50240000 buteo        aves  common buzzard        
+## 10    50000000 biarmicus    aves  lanner falcon         
+## # ℹ 130 more rows</code></pre>
+<p>the Caracara of the species cheriway has the largest homerange The
+Caracara is a type of falcon. There are many different species of
+caracara and they live in many different places ranging from across the
+southern US and Central/South America.</p>
 </div>
 <div id="push-your-final-code-to-github" class="section level2">
 <h2>Push your final code to GitHub!</h2>

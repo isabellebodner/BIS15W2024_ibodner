@@ -1,7 +1,7 @@
 ---
 title: "Lab 4 Homework"
 author: "Isabelle Bodner"
-date: "2024-01-24"
+date: "2024-01-28"
 output:
   html_document: 
     theme: spacelab
@@ -157,6 +157,7 @@ levels(homerange$taxon)
 ## [9] "turtles"
 ```
 
+
 ```r
 levels(homerange$order)
 ```
@@ -258,8 +259,8 @@ select(homerange, "species","trophic.guild")
 ```
 
 ```r
-canrnivore <- filter(homerange, trophic.guild == "carnivore")
-summary(canrnivore$species)
+carnivore <- filter(homerange, trophic.guild == "carnivore")
+summary(carnivore$species)
 ```
 
 ```
@@ -280,17 +281,109 @@ summary(herbivore$species)
 
 **7. Make two new data frames, one which is restricted to carnivores and another that is restricted to herbivores.**  
 
+```r
+carnivore <- filter(homerange, trophic.guild == "carnivore")
+herbivore <- filter(homerange, trophic.guild == "herbivore")
+```
 
 **8. Do herbivores or carnivores have, on average, a larger `mean.hra.m2`? Remove any NAs from the data.**  
 
+```r
+mean(carnivore$mean.hra.m2, na.rm = T)
+```
+
+```
+## [1] 13039918
+```
 
 
+```r
+mean(herbivore$mean.hra.m2, na.rm = T)
+```
+
+```
+## [1] 34137012
+```
+herbivores have a larger average mean.ra.m2.
 
 **9. Make a new dataframe `owls` that is limited to the mean mass, log10 mass, family, genus, and species of owls in the database. Which is the smallest owl? What is its common name? Do a little bit of searching online to see what you can learn about this species and provide a link below** 
 
+```r
+names(homerange)
+```
+
+```
+##  [1] "taxon"                      "common.name"               
+##  [3] "class"                      "order"                     
+##  [5] "family"                     "genus"                     
+##  [7] "species"                    "primarymethod"             
+##  [9] "N"                          "mean.mass.g"               
+## [11] "log10.mass"                 "alternative.mass.reference"
+## [13] "mean.hra.m2"                "log10.hra"                 
+## [15] "hra.reference"              "realm"                     
+## [17] "thermoregulation"           "locomotion"                
+## [19] "trophic.guild"              "dimension"                 
+## [21] "preymass"                   "log10.preymass"            
+## [23] "PPMR"                       "prey.size.reference"
+```
+
+
+```r
+owls <- select(homerange, "order","mean.mass.g","log10.mass","family","genus","species")
+owls <- filter(owls, order == "strigiformes")
+owls
+```
+
+```
+## # A tibble: 9 × 6
+##   order        mean.mass.g log10.mass family    genus      species    
+##   <fct>              <dbl>      <dbl> <chr>     <chr>      <chr>      
+## 1 strigiformes       119         2.08 strigidae aegolius   funereus   
+## 2 strigiformes       252         2.40 strigidae asio       otus       
+## 3 strigiformes       156.        2.19 strigidae athene     noctua     
+## 4 strigiformes      2191         3.34 strigidae bubo       bubo       
+## 5 strigiformes      1510         3.18 strigidae bubo       virginianus
+## 6 strigiformes        61.3       1.79 strigidae glaucidium passerinum 
+## 7 strigiformes      1920         3.28 strigidae nyctea     scandiaca  
+## 8 strigiformes       519         2.72 strigidae strix      aluco      
+## 9 strigiformes       285         2.45 tytonidae tyto       alba
+```
+
+smallest owl is species passerinum with a common name Eurasian pygmy owl
+https://en.wikipedia.org/wiki/Eurasian_pygmy_owl 
 
 **10. As measured by the data, which bird species has the largest homerange? Show all of your work, please. Look this species up online and tell me about it!**.  
 
+
+```r
+largest_homerange <- select(homerange, "mean.hra.m2", "species", "class", "common.name")
+aves <- filter(largest_homerange, class == "aves")
+```
+
+
+```r
+aves %>% 
+  arrange(desc(mean.hra.m2)) 
+```
+
+```
+## # A tibble: 140 × 4
+##    mean.hra.m2 species      class common.name           
+##          <dbl> <chr>        <chr> <chr>                 
+##  1   241000000 cheriway     aves  caracara              
+##  2   200980000 pygargus     aves  Montagu's harrier     
+##  3   153860000 peregrinus   aves  peregrine falcon      
+##  4   117300000 pennatus     aves  booted eagle          
+##  5    84300000 camelus      aves  ostrich               
+##  6    78500000 gallicus     aves  short-toed snake eagle
+##  7    63585000 turtur       aves  European turtle dove  
+##  8    63570000 percnopterus aves  Egyptian vulture      
+##  9    50240000 buteo        aves  common buzzard        
+## 10    50000000 biarmicus    aves  lanner falcon         
+## # ℹ 130 more rows
+```
+the Caracara of the species cheriway has the largest homerange
+The Caracara is a type of falcon. There are many different species of caracara and they live in many different places ranging from across the southern US and Central/South America.
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
