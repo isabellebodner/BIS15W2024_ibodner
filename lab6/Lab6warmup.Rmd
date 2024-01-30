@@ -1,0 +1,50 @@
+---
+title: "Lab 6 Warmup"
+output: html_document
+date: "2024-01-30"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("tidyverse")
+```
+```{r}
+bison <- read_csv("data/bison.csv")
+```
+```{r}
+dim(bison)
+```
+```{r}
+summary(bison)
+```
+```{r}
+bison_info <- bison%>% 
+  select("animal_code","animal_sex","animal_weight","animal_yob")
+```
+
+```{r}
+bison_info %>% 
+  filter(between(animal_yob, 1980,1990))
+```
+#pick out male and male info
+```{r}
+male <- filter(bison_year, animal_sex == "M")
+summary(male)
+#21
+```
+male mean weight is 1543
+```{r}
+males <- bison_new %>% #how prof did it 
+  filter(animal_yob>=1980 & animal_yob<=1990) %>% 
+  filter(animal_sex=="M")
+males
+```
+#female mean
+```{r}
+female <- filter(bison_year, animal_sex == "F")
+mean(female$animal_weight)
+```
+males bigger
