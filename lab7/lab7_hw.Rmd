@@ -117,31 +117,31 @@ Morocco
 
 8. Which five countries caught the most cephalopods between 2008-2012?
 ```{r}
-focus_data %>% 
-  filter(asfis_species_name=="Cephalopoda") %>% 
+fisheries_tidy %>% 
+  filter(common_name=="Cephalopods nei") %>% 
   filter(year>="2008" & year<="2012") %>% 
   group_by(country) %>% 
-  summarise(sum_catch=sum(catch)) %>%
+  summarise(sum_catch=sum(catch, na.rm = T)) %>%
   arrange(desc(sum_catch))
 ```
-India, China, Algeria, France, TimorLeste
+India, China, Spain, Algeria, France
 
 9. Which species had the highest catch total between 2008-2012? (hint: Osteichthyes is not a species)
 ```{r}
-focus_data %>% 
+fisheries_tidy %>% 
   filter(year>=2008 & year<=2012) %>% 
   group_by(asfis_species_name) %>% 
-  summarise(sum_catch=sum(catch)) %>% 
+  summarise(sum_catch=sum(catch, na.rm = T)) %>% 
   arrange(desc(sum_catch))
 ```
 Theragra chalcogramma
 
 10. Use the data to do at least one analysis of your choice.
 ```{r}
-focus_data %>% 
+fisheries_tidy %>% 
   filter(year==2000) %>% 
   group_by(asfis_species_name) %>% 
-  summarise(sum_catch=sum(catch)) %>% 
+  summarise(sum_catch=sum(catch, na.rm = T)) %>% 
   arrange(desc(sum_catch))
 ```
 

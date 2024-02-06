@@ -324,11 +324,11 @@ Morocco
 8. Which five countries caught the most cephalopods between 2008-2012?
 
 ```r
-focus_data %>% 
-  filter(asfis_species_name=="Cephalopoda") %>% 
+fisheries_tidy %>% 
+  filter(common_name=="Cephalopods nei") %>% 
   filter(year>="2008" & year<="2012") %>% 
   group_by(country) %>% 
-  summarise(sum_catch=sum(catch)) %>%
+  summarise(sum_catch=sum(catch, na.rm = T)) %>%
   arrange(desc(sum_catch))
 ```
 
@@ -338,30 +338,30 @@ focus_data %>%
 ##    <fct>                        <dbl>
 ##  1 India                          570
 ##  2 China                          257
-##  3 Algeria                        162
-##  4 France                         101
-##  5 TimorLeste                      76
-##  6 Italy                           66
-##  7 Cambodia                        15
-##  8 Taiwan Province of China        13
-##  9 Madagascar                      11
-## 10 Viet Nam                         0
-## 11 Croatia                         NA
-## 12 Israel                          NA
-## 13 Mauritania                      NA
-## 14 Mozambique                      NA
-## 15 Somalia                         NA
-## 16 Spain                           NA
+##  3 Spain                          198
+##  4 Algeria                        162
+##  5 France                         101
+##  6 Mauritania                      90
+##  7 TimorLeste                      76
+##  8 Italy                           66
+##  9 Mozambique                      16
+## 10 Cambodia                        15
+## 11 Taiwan Province of China        13
+## 12 Madagascar                      11
+## 13 Croatia                          7
+## 14 Israel                           0
+## 15 Somalia                          0
+## 16 Viet Nam                         0
 ```
-India, China, Algeria, France, TimorLeste
+India, China, Spain, Algeria, France
 
 9. Which species had the highest catch total between 2008-2012? (hint: Osteichthyes is not a species)
 
 ```r
-focus_data %>% 
+fisheries_tidy %>% 
   filter(year>=2008 & year<=2012) %>% 
   group_by(asfis_species_name) %>% 
-  summarise(sum_catch=sum(catch)) %>% 
+  summarise(sum_catch=sum(catch, na.rm = T)) %>% 
   arrange(desc(sum_catch))
 ```
 
@@ -369,16 +369,16 @@ focus_data %>%
 ## # A tibble: 1,472 × 2
 ##    asfis_species_name    sum_catch
 ##    <chr>                     <dbl>
-##  1 Theragra chalcogramma     41075
-##  2 Engraulis ringens         35523
-##  3 Cololabis saira            5733
-##  4 Sardinella longiceps       3849
-##  5 Sardinops caeruleus        3204
-##  6 Brevoortia patronus        3179
-##  7 Acetes japonicus           2915
-##  8 Squillidae                 2884
-##  9 Trachurus japonicus        2710
-## 10 Ammodytes personatus       2611
+##  1 Osteichthyes             107808
+##  2 Theragra chalcogramma     41075
+##  3 Engraulis ringens         35523
+##  4 Katsuwonus pelamis        32153
+##  5 Trichiurus lepturus       30400
+##  6 Clupea harengus           28527
+##  7 Thunnus albacares         20119
+##  8 Scomber japonicus         14723
+##  9 Gadus morhua              13253
+## 10 Thunnus alalunga          12019
 ## # ℹ 1,462 more rows
 ```
 Theragra chalcogramma
@@ -386,27 +386,27 @@ Theragra chalcogramma
 10. Use the data to do at least one analysis of your choice.
 
 ```r
-focus_data %>% 
+fisheries_tidy %>% 
   filter(year==2000) %>% 
   group_by(asfis_species_name) %>% 
-  summarise(sum_catch=sum(catch)) %>% 
+  summarise(sum_catch=sum(catch, na.rm = T)) %>% 
   arrange(desc(sum_catch))
 ```
 
 ```
 ## # A tibble: 1,166 × 2
-##    asfis_species_name     sum_catch
-##    <chr>                      <dbl>
-##  1 Theragra chalcogramma       7715
-##  2 Engraulis ringens           6357
-##  3 Trachurus murphyi           4892
-##  4 Sardinella longiceps        1091
-##  5 Trachurus japonicus         1001
-##  6 Oncorhynchus gorbuscha       964
-##  7 Stolephorus spp              914
-##  8 Sardinella gibbosa           719
-##  9 Loligo opalescens            711
-## 10 Cololabis saira              709
+##    asfis_species_name    sum_catch
+##    <chr>                     <dbl>
+##  1 Osteichthyes              23998
+##  2 Theragra chalcogramma      7715
+##  3 Engraulis ringens          6357
+##  4 Katsuwonus pelamis         5303
+##  5 Trachurus murphyi          4892
+##  6 Mollusca                   4309
+##  7 Thunnus albacares          3751
+##  8 Trichiurus lepturus        3298
+##  9 Sardinella spp             2906
+## 10 Scomber japonicus          2884
 ## # ℹ 1,156 more rows
 ```
 
