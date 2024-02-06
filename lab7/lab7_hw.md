@@ -1,7 +1,7 @@
 ---
 title: "Lab 7 Homework"
 author: "Isabelle Bodner"
-date: "2024-02-05"
+date: "2024-02-06"
 output:
   html_document: 
     theme: spacelab
@@ -191,36 +191,11 @@ glimpse(fisheries)
 2. Use `janitor` to rename the columns and make them easier to use. As part of this cleaning step, change `country`, `isscaap_group_number`, `asfis_species_number`, and `fao_major_fishing_area` to data class factor. 
 
 ```r
-fisheries <- fisheries %>% 
-  clean_names() %>% 
+fisheries <- clean_names(fisheries) %>% 
   mutate(country=as.factor(country),
          isscaap_group_number=as.factor(isscaap_group_number),
          asfis_species_number=as.factor(asfis_species_number),
          fao_major_fishing_area=as.factor(fao_major_fishing_area))
-fisheries
-```
-
-```
-## # A tibble: 17,692 × 71
-##    country common_name               isscaap_group_number isscaap_taxonomic_gr…¹
-##    <fct>   <chr>                     <fct>                <chr>                 
-##  1 Albania Angelsharks, sand devils… 38                   Sharks, rays, chimaer…
-##  2 Albania Atlantic bonito           36                   Tunas, bonitos, billf…
-##  3 Albania Barracudas nei            37                   Miscellaneous pelagic…
-##  4 Albania Blue and red shrimp       45                   Shrimps, prawns       
-##  5 Albania Blue whiting(=Poutassou)  32                   Cods, hakes, haddocks 
-##  6 Albania Bluefish                  37                   Miscellaneous pelagic…
-##  7 Albania Bogue                     33                   Miscellaneous coastal…
-##  8 Albania Caramote prawn            45                   Shrimps, prawns       
-##  9 Albania Catsharks, nursehounds n… 38                   Sharks, rays, chimaer…
-## 10 Albania Common cuttlefish         57                   Squids, cuttlefishes,…
-## # ℹ 17,682 more rows
-## # ℹ abbreviated name: ¹​isscaap_taxonomic_group
-## # ℹ 67 more variables: asfis_species_number <fct>, asfis_species_name <chr>,
-## #   fao_major_fishing_area <fct>, measure <chr>, x1950 <chr>, x1951 <chr>,
-## #   x1952 <chr>, x1953 <chr>, x1954 <chr>, x1955 <chr>, x1956 <chr>,
-## #   x1957 <chr>, x1958 <chr>, x1959 <chr>, x1960 <chr>, x1961 <chr>,
-## #   x1962 <chr>, x1963 <chr>, x1964 <chr>, x1965 <chr>, x1966 <chr>, …
 ```
 
 We need to deal with the years because they are being treated as characters and start with an X. We also have the problem that the column names that are years actually represent data. We haven't discussed tidy data yet, so here is some help. You should run this ugly chunk to transform the data for the rest of the homework. It will only work if you have used janitor to rename the variables in question 2!  #remove hashtags when you do hw
@@ -263,7 +238,7 @@ fisheries_tidy %>%
 ## 10 Un. Sov. Soc. Rep.        7084
 ## # ℹ 193 more rows
 ```
-204 countries
+203 countries
 
 4. Refocus the data only to include country, isscaap_taxonomic_group, asfis_species_name, asfis_species_number, year, catch.
 
@@ -312,7 +287,7 @@ focus_data %>%
 ## # ℹ abbreviated name: ¹​isscaap_taxonomic_group
 ## # ℹ 1 more variable: catch <dbl>
 ```
-China has the largest overall catch int he year 2000
+China has the largest overall catch in the year 2000
 
 7. Which country caught the most sardines (_Sardina pilchardus_) between the years 1990-2000?
 
@@ -323,35 +298,117 @@ think i need to sum
 focus_data %>% 
   filter(asfis_species_name=="Sardina pilchardus") %>% 
   filter(year>=1990 & year<=2000) %>% 
-  arrange(desc(catch))
+  group_by(country) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
 ```
 
 ```
-## # A tibble: 336 × 6
-##    country  isscaap_taxonomic_gr…¹ asfis_species_name asfis_species_number  year
-##    <fct>    <chr>                  <chr>              <fct>                <dbl>
-##  1 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1994
-##  2 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1996
-##  3 Spain    Herrings, sardines, a… Sardina pilchardus 1210506401            1996
-##  4 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            2000
-##  5 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1990
-##  6 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1991
-##  7 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1998
-##  8 Morocco  Herrings, sardines, a… Sardina pilchardus 1210506401            1993
-##  9 Russian… Herrings, sardines, a… Sardina pilchardus 1210506401            1992
-## 10 Russian… Herrings, sardines, a… Sardina pilchardus 1210506401            1991
-## # ℹ 326 more rows
-## # ℹ abbreviated name: ¹​isscaap_taxonomic_group
-## # ℹ 1 more variable: catch <dbl>
+## # A tibble: 37 × 2
+##    country               sum_catch
+##    <fct>                     <dbl>
+##  1 Morocco                    7470
+##  2 Spain                      3507
+##  3 Russian Federation         1639
+##  4 Ukraine                    1030
+##  5 Portugal                    818
+##  6 Greece                      528
+##  7 Italy                       507
+##  8 Serbia and Montenegro       478
+##  9 Denmark                     477
+## 10 Tunisia                     427
+## # ℹ 27 more rows
 ```
+Morocco
 
 8. Which five countries caught the most cephalopods between 2008-2012?
 
+```r
+focus_data %>% 
+  filter(asfis_species_name=="Cephalopoda") %>% 
+  filter(year>="2008" & year<="2012") %>% 
+  group_by(country) %>% 
+  summarise(sum_catch=sum(catch)) %>%
+  arrange(desc(sum_catch))
+```
+
+```
+## # A tibble: 16 × 2
+##    country                  sum_catch
+##    <fct>                        <dbl>
+##  1 India                          570
+##  2 China                          257
+##  3 Algeria                        162
+##  4 France                         101
+##  5 TimorLeste                      76
+##  6 Italy                           66
+##  7 Cambodia                        15
+##  8 Taiwan Province of China        13
+##  9 Madagascar                      11
+## 10 Viet Nam                         0
+## 11 Croatia                         NA
+## 12 Israel                          NA
+## 13 Mauritania                      NA
+## 14 Mozambique                      NA
+## 15 Somalia                         NA
+## 16 Spain                           NA
+```
+India, China, Algeria, France, TimorLeste
 
 9. Which species had the highest catch total between 2008-2012? (hint: Osteichthyes is not a species)
 
+```r
+focus_data %>% 
+  filter(year>=2008 & year<=2012) %>% 
+  group_by(asfis_species_name) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
+```
+
+```
+## # A tibble: 1,472 × 2
+##    asfis_species_name    sum_catch
+##    <chr>                     <dbl>
+##  1 Theragra chalcogramma     41075
+##  2 Engraulis ringens         35523
+##  3 Cololabis saira            5733
+##  4 Sardinella longiceps       3849
+##  5 Sardinops caeruleus        3204
+##  6 Brevoortia patronus        3179
+##  7 Acetes japonicus           2915
+##  8 Squillidae                 2884
+##  9 Trachurus japonicus        2710
+## 10 Ammodytes personatus       2611
+## # ℹ 1,462 more rows
+```
+Theragra chalcogramma
 
 10. Use the data to do at least one analysis of your choice.
+
+```r
+focus_data %>% 
+  filter(year==2000) %>% 
+  group_by(asfis_species_name) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
+```
+
+```
+## # A tibble: 1,166 × 2
+##    asfis_species_name     sum_catch
+##    <chr>                      <dbl>
+##  1 Theragra chalcogramma       7715
+##  2 Engraulis ringens           6357
+##  3 Trachurus murphyi           4892
+##  4 Sardinella longiceps        1091
+##  5 Trachurus japonicus         1001
+##  6 Oncorhynchus gorbuscha       964
+##  7 Stolephorus spp              914
+##  8 Sardinella gibbosa           719
+##  9 Loligo opalescens            711
+## 10 Cololabis saira              709
+## # ℹ 1,156 more rows
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   

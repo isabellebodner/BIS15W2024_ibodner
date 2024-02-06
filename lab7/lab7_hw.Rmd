@@ -51,13 +51,11 @@ glimpse(fisheries)
 
 2. Use `janitor` to rename the columns and make them easier to use. As part of this cleaning step, change `country`, `isscaap_group_number`, `asfis_species_number`, and `fao_major_fishing_area` to data class factor. 
 ```{r}
-fisheries <- fisheries %>% 
-  clean_names() %>% 
+fisheries <- clean_names(fisheries) %>% 
   mutate(country=as.factor(country),
          isscaap_group_number=as.factor(isscaap_group_number),
          asfis_species_number=as.factor(asfis_species_number),
          fao_major_fishing_area=as.factor(fao_major_fishing_area))
-fisheries
 ```
 
 We need to deal with the years because they are being treated as characters and start with an X. We also have the problem that the column names that are years actually represent data. We haven't discussed tidy data yet, so here is some help. You should run this ugly chunk to transform the data for the rest of the homework. It will only work if you have used janitor to rename the variables in question 2!  #remove hashtags when you do hw
@@ -81,7 +79,7 @@ fisheries_tidy$catch <- as.numeric(fisheries_tidy$catch)
 fisheries_tidy %>% 
   count(country, sort = T)
 ```
-204 countries
+203 countries
 
 4. Refocus the data only to include country, isscaap_taxonomic_group, asfis_species_name, asfis_species_number, year, catch.
 ```{r}
@@ -101,7 +99,7 @@ focus_data %>%
   filter(year=="2000") %>% 
   arrange(desc(catch))
 ```
-China has the largest overall catch int he year 2000
+China has the largest overall catch in the year 2000
 
 7. Which country caught the most sardines (_Sardina pilchardus_) between the years 1990-2000?
 
@@ -111,20 +109,41 @@ think i need to sum
 focus_data %>% 
   filter(asfis_species_name=="Sardina pilchardus") %>% 
   filter(year>=1990 & year<=2000) %>% 
-  arrange(desc(catch))
+  group_by(country) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
 ```
+Morocco
 
 8. Which five countries caught the most cephalopods between 2008-2012?
 ```{r}
-
+focus_data %>% 
+  filter(asfis_species_name=="Cephalopoda") %>% 
+  filter(year>="2008" & year<="2012") %>% 
+  group_by(country) %>% 
+  summarise(sum_catch=sum(catch)) %>%
+  arrange(desc(sum_catch))
 ```
+India, China, Algeria, France, TimorLeste
 
 9. Which species had the highest catch total between 2008-2012? (hint: Osteichthyes is not a species)
 ```{r}
-
+focus_data %>% 
+  filter(year>=2008 & year<=2012) %>% 
+  group_by(asfis_species_name) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
 ```
+Theragra chalcogramma
 
 10. Use the data to do at least one analysis of your choice.
+```{r}
+focus_data %>% 
+  filter(year==2000) %>% 
+  group_by(asfis_species_name) %>% 
+  summarise(sum_catch=sum(catch)) %>% 
+  arrange(desc(sum_catch))
+```
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences.   
