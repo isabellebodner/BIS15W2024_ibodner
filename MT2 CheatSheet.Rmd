@@ -1,0 +1,240 @@
+---
+title: "MT2 CheatSheet"
+output: 
+  html_document: 
+    keep_md: yes
+date: "2024-02-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+library("naniar")
+library("RColorBrewer")
+library("paletteer")
+```
+#cancel use of scientific notation
+```{r}
+options(scipen=999) #cancels the use of scientific notation for the session
+```
+
+#12
+
+#geom_bar no y axis, use FILL, ex:
+```{r}
+p <- homerange %>% 
+  ggplot(aes(x=taxon, fill=trophic.guild))+
+  geom_bar(na.rm=T, position="dodge")
+```
+
+#Have a look at the `linedraw` theme; also how to angle the x axis and how to put titles in the middle
+```{r}
+p + theme_linedraw()+
+  theme(axis.text.x = element_text(angle = 60, hjust=1))+
+  labs(title = "Observations by Taxon in Homerange Data",
+       x = NULL,
+       y= "n",
+       fill= "Trophic Guild")
+```
+
+#how to put title in the middle
+theme(plot.title=element_text(size=rel(1.5), hjust=.5))
+
+#how to make thresholds 
+```{r}
+homerange <- homerange %>% 
+             mutate(mass_category = case_when(log10.mass <= 1.75 ~ "small",
+                                              log10.mass > 1.75 & log10.mass <= 2.75 ~ "medium",
+                                              log10.mass > 2.75 ~ "large"))
+```
+
+3. Isolate the small `range_category` and plot the range of `log10.mass` by taxonomic class.
+```{r}
+homerange %>% 
+  filter(range_category=="small") %>% 
+  ggplot(aes(x=class, y= log10.mass, fill=class))+
+  geom_boxplot()
+```
+
+1. Make a histogram of `log10.hra`. Make sure to add a title.
+```{r}
+homerange %>% 
+  ggplot(aes(x = log10.hra)) +
+  geom_histogram(color = "black", fill = "gray70")+
+  labs(title = "Distribution of Home Range")
+```
+
+2. Now plot the same variable using `geom_density()`.
+```{r}
+homerange %>% 
+  ggplot(aes(x = log10.hra)) +
+  geom_density(fill="deepskyblue4", alpha  =0.4, color = "black")+
+  labs(title = "Distribution of Body Mass")
+```
+
+3. Combine them both!
+```{r}
+homerange %>% 
+  ggplot(aes(x=log10.hra)) +
+  geom_histogram(aes(y = after_stat(density)), fill = "deepskyblue4", alpha = 0.4, color = "black")+
+  geom_density(color = "orange")+
+  labs(title = "Distribution of Homernge")
+```
+
+
+#11
+```{r}
+life_history %>% 
+  count(order, sort=T) %>% 
+  ggplot(aes(x=order, y=n))+
+  geom_col()+
+  coord_flip()
+```
+
+#Scatter plots allow for comparisons of two continuous variables. Make a scatterplot below that compares gestation time and weaning mass.
+```{r}
+life_history %>% 
+  ggplot(aes(x=gestation, y=wean_mass))+
+  geom_jitter(na.rm=T)+
+  scale_y_log10()
+```
+
+## Boxplots
+Box plots help us visualize a range of values. So, on the x-axis we typically have something categorical and the y-axis is the range. Let's make a box plot that compares mass across orders.
+```{r}
+life_history %>% 
+  ggplot(aes(x=order, y=mass))+
+  geom_boxplot(na.rm=T)+
+  coord_flip()
+```
+
+```{r}
+life_history %>% 
+  filter(order!="Cetacea") %>% 
+  ggplot(aes(x=order, y=mass))+
+  geom_boxplot(na.rm=T)+
+  coord_flip()+
+  scale_y_log10()
+```
+
+Make a plot that compares age and height of elephants.
+```{r}
+elephants %>% 
+  ggplot(aes(x=age, y=height)) + 
+  geom_point() + 
+  geom_smooth(method=lm, se=F)
+```
+
+#thermoregulation
+We can color the points by a categorical variable.
+```{r}
+p+geom_point(aes(color=thermoregulation), size=1.5)
+```
+
+We can also scale all bars to a percentage.
+```{r}
+homerange %>% 
+  ggplot(aes(x = taxon, fill = trophic.guild))+
+  geom_bar(position = position_fill())+ 
+  scale_y_continuous(labels = scales::percent)+
+  coord_flip()
+```
+
+#9
+
+Rules:  
++ `pivot_longer`(cols, names_to, values_to)
++ `cols` - Columns to pivot to longer format
++ `names_to` - Name of the new column; it will contain the column names of gathered columns as values
++ `values_to` - Name of the new column; it will contain the data stored in the values of gathered columns
+
+To fix this problem, we need to reshape the table to long format while keeping track of column names and values. We do this using `pivot_longer()`. Notice that the dimensions of the data frame change.  
+```{r}
+heartrate %>% 
+  pivot_longer(-patient, #patient will not move
+               names_to = "drug", #make a new column called "drug"
+               values_to="heartrate" #values moved to a new column called "heartrate"
+               )
+```
+
+## Example 2: some column names are data
+Some (but not all) of the column names are data. We also have NA's.
+```{r}
+billboard <- read_csv("data/billboard.csv")
+billboard
+```
+
+Solution 1: specify a range of columns that you want to pivot.
+```{r}
+billboard2 <- 
+  billboard %>% 
+  pivot_longer(wk1:wk76, # a range of columns
+               names_to = "week",
+               values_to = "rank", 
+               values_drop_na = TRUE #this will drop the NA's
+               )
+billboard2
+```
+
+Solution 2: OR, specify columns that you want to stay fixed.
+```{r}
+billboard3 <- 
+  billboard %>% 
+  pivot_longer(-c(artist, track, date.entered), #specific columns to stay fixed
+               names_to = "week",
+               values_to = "rank",
+               values_drop_na = TRUE
+               )
+billboard3
+```
+
+Solution 3: identify columns by a prefix, remove the prefix and all NA's.
+```{r}
+billboard %>% 
+   pivot_longer(
+   cols = starts_with("wk"), #columns that start with "wk"
+   names_to = "week",
+   names_prefix = "wk",
+   values_to = "rank",
+   values_drop_na = TRUE)
+```
+
+We need to start by separating the patient names from their sexes. `separate()` needs to know which column you want to split, the names of the new columns, and what to look for in terms of breaks in the data.
+```{r}
+heartrate2 %>% 
+  separate(patient, into= c("patient", "sex"), sep = "_")
+```
+
+## Practice
+1. Re-examine `heartrate2`. Use `separate()` for the sexes, `pivot_longer()` to tidy, and `arrange()` to organize by patient and drug. Store this as a new object `heartrate3`.  
+```{r}
+heartrate3 <- heartrate2 %>% 
+  separate(patient, into=c("patient", "sex"), sep="_") %>% 
+  pivot_longer(-c(patient, sex),
+               names_to = "drug",
+               values_to = "heartrate")
+heartrate3
+```
+
+2. `unite()` is the opposite of separate(). Its syntax is straightforward. You only need to give a new column name and then list the columns to combine with a separation character.  Give it a try below by recombining patient and sex from `heartrate3`.  
+```{r}
+heartrate3 %>% 
+  unite(patient_sex, "patient", "sex", sep=" ")
+```
+
+When using `pivot_wider()` we use `names_from` to identify the variables (new column names) and `values_from` to identify the values associated with the new columns.
+```{r}
+tb_data %>% 
+  pivot_wider(names_from = "key", #the observations under key will become new columns
+              values_from = "value") #the values under value will be moved to the new columns
+```
+
+
+
+
+
