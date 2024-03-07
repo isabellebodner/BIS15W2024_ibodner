@@ -36,6 +36,10 @@ Lets get some get a feel for what copilot (or ChatGPT) does, use Github Copilot 
 
 4. [Try it yourself: Insert your own question here]
 
+```{r}
+#install.packages("shinydashboard")
+```
+
 ## Load the libraries  
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -48,7 +52,7 @@ library(shinydashboard)
 ## Load the Data: 
 ```{r}
 #load the Netflix Data in your Data folder, save it under the object name netflix
-
+netflix <- read_csv("data/netflix_titles.csv")
 
 ```
 
