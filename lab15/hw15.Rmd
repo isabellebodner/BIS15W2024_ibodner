@@ -1,8 +1,10 @@
 ---
 title: "BIS15L_AI_hmwk"
-author: "Your Name"
+author: "Isabelle Bodner"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -24,91 +26,92 @@ library(dplyr)
 ```
 
 
-1.
+1. Load Data
 ```{r}
-blood_count <- read_csv("data/blood_count.csv")
+blood_count <- read_csv("data/blood_count_dataset.csv") #wrong name for data
 ```
 
-2. 
+2. Get an idea of Structure
 ```{r}
-glmpse(blood_count)
+glimpse(blood_count) #spelled glimpse wrong
 
 ```
 
-3. 
+3. Compare min mean and max of red blood cell count by gender
 ```{r}
 blood_count %>% 
-  group_by(gender) %>% 
-  summarize(min=min(red_blood_cells)
-            mean=maen(red_blood_cells),
-            max=max(red_blood_cells)
+  group_by(Gender) %>%  #need capital G and capitalize RBC
+  summarize(min=min(Red_Blood_Cells), #forgot comma
+            mean=mean(Red_Blood_Cells), #misspelled mean
+            max=max(Red_Blood_Cells)) #needed another parenthesis
 ```
 
 
-4. 
+4. Show mean info for columns 3-9 for just Males
 ```{r}
 options(scipen = 999, digits = 2)
 
 blood_count %>% 
-  filter(Gender = "male") %>%
-  select[3:9] %>%
-  colMeans(na.rm = TRUE)
+  filter(Gender == "Male") %>% #need two "=" and capital M
+  select(3:9) %>% #needed () instead
+  summarise_all(mean, na.rm = TRUE)
 
 ```
 
-5. 
+5. Show mean info for columns 3-9 for just Females
 ```{r}
-bloood_count %>% 
-  filter(Gender = "Female") />%
-  select[3:9] %>%
-  colMeans(na.rm = T)
+blood_count %>%  #misspelled
+  filter(Gender == "Female") %>%  #needed two "="
+  select(3:9) %>% #needed parenthesis
+  summarise_all(mean, na.rm = T) 
 ```
 
 
-6. 
+6. create new column "test" with values from the last three columns and make a plot to show the range of values by each gender. (use faceting)
 ```{r}
 
 blood_count %>%
-  pivot_wider(cols = [3:9], names_to = "Test", values_to = "Values") %>%
+  pivot_longer(cols = c("MCV","MCH","MCHC"), names_to = "Test", values_to = "Values") %>% #change to pivot_longer and specify the last three columns that make sense
   ggplot(aes(x = Gender, y = Values, fill = Gender)) +
-  geom_boxplot() +
-  facet(~ Test, scales = "free") 
+  geom_boxplot()+
+  facet_grid(~ Test, scales = "free") #change to facet_grid
   labs(title = "Boxplot of Blood Count Tests",
        x = "Test",
        y = "Values")
 
 ```
 
-7. 
+7. Create new column "age group" using data from "Age" for every 10 years and display
 ```{r}
-grouped_bc <- blood_count %>%
-  change(Age_Group = case_when(
+grouped_bc <- blood_count %>% 
+  mutate(Age_Group = case_when( #change to mutate
     Age >= 20 & Age <= 29 ~ "20s",
     Age >= 30 & Age <= 39 ~ "30s",
     Age >= 40 & Age <= 49 ~ "40s",
     Age >= 50 & Age <= 59 ~ "50s",
-    Age >= 60 & Age <= 70 ~ "60s")) # there were only 4 people in 70s, so I combined it with 60s
+    Age >= 60 ~ "60's")) # there were only 4 people in 70s, so I combined it with 60s
 
-head(grouped_bc)
+head(grouped_bc) #show
 
 ```
 
-8. 
+8. Create boxplot showing range of tests values by age group
 ```{r}
-blood_count %>%
-  pivot_longer(cols = 3:9, names_to = "Test", values_to = "Values") %>%
-  ggplot(ase(x = Age_Group, y = values, fill = Age_Group)) +
+grouped_bc %>% #need new object created previously to have "Age_group"
+  pivot_longer(cols = c("MCV","MCH","MCHC"), names_to = "Test", values_to = "Values") %>%
+  ggplot(aes(x = Age_Group, y = Values, fill = Age_Group)) + #fix spell error and capitalize V
   geom_boxplot() +
-  facet_wrap( Test, scales = "free") +  # Facet by the "Test" variable
+  facet_wrap(~ Test, scales = "free") +  # Facet by the "Test" variable need to add "~"
   labs(title = "Boxplot of Blood Count Tests by Age Group",
        x = "Age Group",
        y = "Values")
 
 ```
 9. What are two drawbacks and two benefits of AI?
+It is extremely helpful if you get stuck and you can learn a lot from it, but if you use CHATGPT you have to put in a lot of work to explain the context of the problem because it can't see my data. It also can let coders become lazy.
 
 10. Do you think you will use AI for coding in the future? Why or why not?
-
+Yes! I think the future involves a lot of AI so it is very useful and smart to start to learn now how it can be applied and get used to using it alongside my brain.
 
 ## Push your final code to GitHub!
 Please be sure that you check the `keep md` file in the knit preferences. 
