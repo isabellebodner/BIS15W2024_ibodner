@@ -3,6 +3,7 @@ Welcome to my Github page! This is my repository for the Data Science for Biolog
 # Homework
 Keeping homeworks in homework folder!
 # Contact Information  
-[Isabelle Bodner](ilbodner)  
+Isabelle Bodner
+ilbodner@ucdavis.edu
 # Thank you!
 
